@@ -46,12 +46,14 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
  * @author Clinton Begin
+ * Executor 接口的抽象基类实现
  */
 public abstract class BaseExecutor implements Executor {
-
+  // 日志
   private static final Log log = LogFactory.getLog(BaseExecutor.class);
-
+  // 事务
   protected Transaction transaction;
+  //
   protected Executor wrapper;
 
   protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;

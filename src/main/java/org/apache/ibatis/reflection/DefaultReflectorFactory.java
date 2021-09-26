@@ -20,6 +20,11 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.ibatis.util.MapUtil;
 
+/**
+ * ReflectorFactory 的默认实现
+ * 核心为内部存在一个映射 Class 到 Reflector 的 Map
+ * 通过 findForClass 获取 Class 对应的 Reflector
+ */
 public class DefaultReflectorFactory implements ReflectorFactory {
   private boolean classCacheEnabled = true;
   private final ConcurrentMap<Class<?>, Reflector> reflectorMap = new ConcurrentHashMap<>();

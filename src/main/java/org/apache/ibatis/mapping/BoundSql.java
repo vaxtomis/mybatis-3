@@ -32,6 +32,10 @@ import org.apache.ibatis.session.Configuration;
  * Can also have additional parameters that are created by the dynamic language (for loops, bind...).
  *
  * @author Clinton Begin
+ *
+ * 处理任何动态内容后从 {@link SqlSource} 获得 SQL 字符串。
+ * SQL 可能有 SQL 占位符 “？” 和一个有序的附带参数附加信息的参数映射列表（至少可以通过对象的属性名获取值）。
+ * 也可以有由动态语言创建的附加参数（for 循环、绑定...）。
  */
 public class BoundSql {
 
@@ -49,27 +53,33 @@ public class BoundSql {
     this.metaParameters = configuration.newMetaObject(additionalParameters);
   }
 
+  // 获取 sql 语句（String）
   public String getSql() {
     return sql;
   }
 
+  // 获取参数映射表
   public List<ParameterMapping> getParameterMappings() {
     return parameterMappings;
   }
 
+  // 获取参数对象
   public Object getParameterObject() {
     return parameterObject;
   }
 
+  // 判断是否附加参数
   public boolean hasAdditionalParameter(String name) {
     String paramName = new PropertyTokenizer(name).getName();
     return additionalParameters.containsKey(paramName);
   }
 
+  // 设定附加参数
   public void setAdditionalParameter(String name, Object value) {
     metaParameters.setValue(name, value);
   }
 
+  // 获取附加参数
   public Object getAdditionalParameter(String name) {
     return metaParameters.getValue(name);
   }

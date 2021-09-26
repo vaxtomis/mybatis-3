@@ -29,19 +29,22 @@ import org.apache.ibatis.transaction.Transaction;
 
 /**
  * @author Clinton Begin
+ * Executor 接口，中间数据处理
+ * 定义最基础的 update, query, queryCursor
  */
 public interface Executor {
 
   ResultHandler NO_RESULT_HANDLER = null;
 
+  // 更新
   int update(MappedStatement ms, Object parameter) throws SQLException;
-
+  // 查询（分页 缓存 绑定sql）
   <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey cacheKey, BoundSql boundSql) throws SQLException;
-
+  // 查询（分页）
   <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException;
-
+  // 查询游标
   <E> Cursor<E> queryCursor(MappedStatement ms, Object parameter, RowBounds rowBounds) throws SQLException;
-
+  // 刷新语句
   List<BatchResult> flushStatements() throws SQLException;
 
   void commit(boolean required) throws SQLException;

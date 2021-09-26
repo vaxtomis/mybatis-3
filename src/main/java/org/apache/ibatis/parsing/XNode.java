@@ -254,6 +254,7 @@ public class XNode {
     return value == null ? def : Float.valueOf(value);
   }
 
+  // 获取子 XNode 节点列表
   public List<XNode> getChildren() {
     List<XNode> children = new ArrayList<>();
     NodeList nodeList = node.getChildNodes();

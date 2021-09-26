@@ -97,6 +97,9 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
  * @author Clinton Begin
+ *
+ * 用于维护配置信息的类
+ * 可以由 XMLConfigBuilder.parse() 创建配置信息类
  */
 public class Configuration {
 

@@ -50,6 +50,7 @@ import org.apache.ibatis.type.JdbcType;
 /**
  * @author Clinton Begin
  * @author Kazuki Shimizu
+ *
  */
 public class XMLConfigBuilder extends BaseBuilder {
 
@@ -91,6 +92,11 @@ public class XMLConfigBuilder extends BaseBuilder {
     this.parser = parser;
   }
 
+  /**
+   * XMLConfigBuilder 的解析方法，XMLConfigBuilder 也是一次性的
+   * 判断未解析过后调用 parseConfiguration 解析 "/configuration"
+   *
+   */
   public Configuration parse() {
     if (parsed) {
       throw new BuilderException("Each XMLConfigBuilder can only be used once.");
@@ -100,23 +106,42 @@ public class XMLConfigBuilder extends BaseBuilder {
     return configuration;
   }
 
+  /**
+   * 实际解析的方法，初读只要直到它大概做什么就可以
+   * MyBatis 里实现了一个 XPath 解析器，按顺序去解析各种 XPath节点
+   * 这里传入的 root 为 <configuration>
+   * 即解析 <configuration> 下的众多子节点
+   */
   private void parseConfiguration(XNode root) {
     try {
       // issue #117 read properties first
+      // 解析 properties
       propertiesElement(root.evalNode("properties"));
+      // 解析 settings，转换为 properties 对象
       Properties settings = settingsAsProperties(root.evalNode("settings"));
+      // 加载 vfs
       loadCustomVfs(settings);
       loadCustomLogImpl(settings);
+      // 解析 typeAliases 配置
       typeAliasesElement(root.evalNode("typeAliases"));
+      // 解析 plugins 配置
       pluginElement(root.evalNode("plugins"));
+      // 解析 objectFactory 配置
       objectFactoryElement(root.evalNode("objectFactory"));
+      // 解析 objectWrapperFactory 配置
       objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
+      // 解析 reflectorFactory 配置
       reflectorFactoryElement(root.evalNode("reflectorFactory"));
+      // settings 中的信息设置到 Configuration 对象中
       settingsElement(settings);
       // read it after objectFactory and objectWrapperFactory issue #631
+      // 解析 environments 配置
       environmentsElement(root.evalNode("environments"));
+      // 解析 databaseIdProvider 配置
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
+      // 解析 typeHandlers 配置
       typeHandlerElement(root.evalNode("typeHandlers"));
+      // 解析 mappers 配置
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
@@ -127,8 +152,10 @@ public class XMLConfigBuilder extends BaseBuilder {
     if (context == null) {
       return new Properties();
     }
+    // 获取子节点的内容以 properties 返回
     Properties props = context.getChildrenAsProperties();
     // Check that all settings are known to the configuration class
+    //
     MetaClass metaConfig = MetaClass.forClass(Configuration.class, localReflectorFactory);
     for (Object key : props.keySet()) {
       if (!metaConfig.hasSetter(String.valueOf(key))) {
@@ -219,23 +246,38 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
+  /**
+   * propertiesElement 先解析 <properties>，再从文件系统或网络读取配置
+   * 会存在同名覆盖的情况（Properties 继承并拓展自 Hashtable）
+   */
   private void propertiesElement(XNode context) throws Exception {
     if (context != null) {
+      // 解析子节点，转换成 Properties
       Properties defaults = context.getChildrenAsProperties();
+      // 获取 resource
       String resource = context.getStringAttribute("resource");
+      // 获取 url
       String url = context.getStringAttribute("url");
       if (resource != null && url != null) {
+        // resource 和 url 不同时依赖
         throw new BuilderException("The properties element cannot specify both a URL and a resource based property file reference.  Please specify one or the other.");
       }
       if (resource != null) {
+        // 文件系统加载解析
         defaults.putAll(Resources.getResourceAsProperties(resource));
       } else if (url != null) {
+        // url 加载解析
         defaults.putAll(Resources.getUrlAsProperties(url));
       }
+      /**
+       * variables 也是 Properties
+       * 相当于在 configuration 中的 variables 里添加 defaults
+       */
       Properties vars = configuration.getVariables();
       if (vars != null) {
         defaults.putAll(vars);
       }
+      // parser 和 configuration 同步合并之后的 variables
       parser.setVariables(defaults);
       configuration.setVariables(defaults);
     }

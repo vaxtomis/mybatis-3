@@ -29,6 +29,12 @@ import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
  * Builds {@link SqlSession} instances.
  *
  * @author Clinton Begin
+ *
+ * 主要功能用来创建 SqlSession
+ * 使用后创建出 SqlSession 就销毁
+ *
+ * 基本没做什么事，调用了 XMLConfigBuidler 解析，并把返回的 Configuration 作为参数
+ * 传入新建 SessionFactory 构造函数，再返回创建的 Factory 对象
  */
 public class SqlSessionFactoryBuilder {
 
@@ -72,8 +78,10 @@ public class SqlSessionFactoryBuilder {
     return build(inputStream, null, properties);
   }
 
+  // 核心 build 方法
   public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
     try {
+      // 创建配置文件解析器，传入参数，获取解析后的 Configuration
       XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);
       return build(parser.parse());
     } catch (Exception e) {
@@ -88,6 +96,7 @@ public class SqlSessionFactoryBuilder {
     }
   }
 
+  // 传入 Configuration，通过 DefaultSqlSessionFactory 构造函数新建 Factory
   public SqlSessionFactory build(Configuration config) {
     return new DefaultSqlSessionFactory(config);
   }

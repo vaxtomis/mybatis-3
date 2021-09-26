@@ -33,7 +33,7 @@ public class MetaClass {
 
   private final ReflectorFactory reflectorFactory;
   private final Reflector reflector;
-
+  // 传入 reflectorFactory，获取对应 Class 的 Reflector
   private MetaClass(Class<?> type, ReflectorFactory reflectorFactory) {
     this.reflectorFactory = reflectorFactory;
     this.reflector = reflectorFactory.findForClass(type);

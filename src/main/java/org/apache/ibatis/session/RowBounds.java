@@ -17,6 +17,8 @@ package org.apache.ibatis.session;
 
 /**
  * @author Clinton Begin
+ * RowBounds 行边界类，分页用
+ * 默认定义 偏移为 0，最大限度为 MAX_VALUE
  */
 public class RowBounds {
 

@@ -30,37 +30,56 @@ import org.apache.ibatis.session.Configuration;
 
 /**
  * @author Clinton Begin
+ * 映射语句
+ * 通过解析 XML 和 注解，生成 sql 对应的 MS 实例
+ * 存储 sql 的信息
  */
 public final class MappedStatement {
 
   private String resource;
   private Configuration configuration;
+  // 命名空间位移标识符，例如 "getUserById"
   private String id;
+  // JDBC Statement 对象的 fetchSize，指定 sql 执行返回最大行数
   private Integer fetchSize;
+  // 等待返回结果超时
   private Integer timeout;
+  // STATEMENT、PREPARED 或 CALLABLE，交互方式
   private StatementType statementType;
+  // 设置ResultSet对象的特征
   private ResultSetType resultSetType;
+  // 从 XML 文件或注释读取的映射语句的内容
   private SqlSource sqlSource;
+  // 缓存
   private Cache cache;
+  // 引用 <parameterMap> 标签定义的参数映射
   private ParameterMap parameterMap;
+  // 结果映射表
   private List<ResultMap> resultMaps;
+  // 是否需要刷新缓存，会导致本地缓存和二级缓存清空
   private boolean flushCacheRequired;
+  // 是否使用二级缓存
   private boolean useCache;
+  // 仅针对嵌套结果select语句适用，如果为true，就是假定嵌套结果包含在一起或分组在一起
   private boolean resultOrdered;
+  // Sql 指令类型
   private SqlCommandType sqlCommandType;
   private KeyGenerator keyGenerator;
   private String[] keyProperties;
   private String[] keyColumns;
   private boolean hasNestedResultMaps;
+  // 数据库 ID
   private String databaseId;
   private Log statementLog;
   private LanguageDriver lang;
+  // 对多结果集的情况适用，列出语句执行后返回的结果集并每个结果集给一个名称，名称使用逗号分隔
   private String[] resultSets;
 
   MappedStatement() {
     // constructor disabled
   }
 
+  // Builder 模式
   public static class Builder {
     private MappedStatement mappedStatement = new MappedStatement();
 

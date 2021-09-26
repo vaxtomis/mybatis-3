@@ -17,9 +17,10 @@ package org.apache.ibatis.session;
 
 /**
  * @author Clinton Begin
+ * 顶级接口，结果处理器接口
  */
 public interface ResultHandler<T> {
-
+  // 定义一个结果处理方法，传入参数为 结果上下文
   void handleResult(ResultContext<? extends T> resultContext);
 
 }

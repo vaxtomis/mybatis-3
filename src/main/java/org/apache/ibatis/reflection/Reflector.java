@@ -47,6 +47,9 @@ import org.apache.ibatis.util.MapUtil;
  * allows for easy mapping between property names and getter/setter methods.
  *
  * @author Clinton Begin
+ *
+ * 代表一个缓存的类定义信息的集合
+ * 类定义信息允许在属性名和 getter/setter 方法之间进行简单映射
  */
 public class Reflector {
 
